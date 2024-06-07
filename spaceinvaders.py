@@ -169,7 +169,7 @@ class Boss:
         Tham số:
             game (Game): Đối tượng Game để sử dụng phương thức fire_bullet.
         """
-        number_of_bullets = random.randint(20, 25)
+        number_of_bullets = random.randint(50, 60)
         for _ in range(number_of_bullets):
             angle = random.uniform(0, 2 * math.pi)
             speed = random.uniform(0.2, 0.5)
