@@ -33,6 +33,9 @@ class Player:
             image (Surface): Hình ảnh của người chơi.
             x, y (float): Tọa độ ban đầu của người chơi.
             change_x, change_y (float): Sự thay đổi tọa độ của người chơi.
+        Phương thức: 
+            draw(): Vẽ người chơi lên màn hình
+            move(): Cập nhật vị trí của người chơi dựa trên sự thay đổi tọa độ
         """
         self.image = pygame.image.load('Images/player.png')
         self.x = 470
@@ -41,11 +44,9 @@ class Player:
         self.change_y = 0
 
     def draw(self):
-        """Vẽ người chơi lên màn hình."""
         screen.blit(self.image, (self.x, self.y))
 
     def move(self):
-        """Cập nhật vị trí của người chơi dựa trên sự thay đổi tọa độ."""
         self.x += self.change_x
         self.y += self.change_y
         if self.x <= 0:
@@ -59,6 +60,7 @@ class Player:
 
 class Enemy:
     """Lớp đại diện cho kẻ địch."""
+    
     def __init__(self):
         """
         Khởi tạo đối tượng Enemy.
@@ -67,6 +69,9 @@ class Enemy:
             image (Surface): Hình ảnh của kẻ địch.
             x, y (float): Tọa độ ban đầu của kẻ địch.
             change_x, change_y (float): Sự thay đổi tọa độ của kẻ địch.
+        Phương thức: 
+            draw(): Vẽ kẻ địch lên màn hình
+            move(): Cập nhật vị trí của kẻ địch dựa trên sự thay đổi tọa độ
         """
         self.image = pygame.image.load('Images/alien.png')
         self.x = random.randint(0, 936)
@@ -90,14 +95,19 @@ class Enemy:
 
 class Bullet:
     """Lớp đại diện cho viên đạn."""
+    
     def __init__(self, x, y, owner, change_x, change_y):
         """
         Khởi tạo đối tượng Bullet.
         
-        Tham số:
+        Thuộc tính:
+            image (Surface): Hình ảnh của viên đạn.
             x, y (float): Tọa độ ban đầu của viên đạn.
             owner (str): Chủ sở hữu viên đạn ('player' hoặc 'enemy').
             change_x, change_y (float): Sự thay đổi tọa độ của viên đạn.
+        Phương thức:
+            move(): Cập nhật vị trí của viên đạn dựa trên sự thay đổi tọa độ.
+            draw(): Vẽ viên đạn lên màn hình nếu nó đang ở trạng thái 'fire'.
         """
         self.image = pygame.image.load('Images/goldbullet.png') if owner == 'player' else pygame.image.load('Images/enemybullet.png')
         self.x = x
@@ -121,6 +131,7 @@ class Bullet:
 
 class Boss:
     """Lớp đại diện cho trùm cuối."""
+    
     def __init__(self):
         """
         Khởi tạo đối tượng Boss.
@@ -131,6 +142,12 @@ class Boss:
             change_x (float): Sự thay đổi tọa độ theo trục x của trùm cuối.
             health (int): Máu hiện tại của trùm cuối.
             max_health (int): Máu tối đa của trùm cuối.
+        Phương thức:
+            draw(): Vẽ trùm cuối lên màn hình và thanh máu của nó.
+            move(): Cập nhật vị trí của trùm cuối dựa trên sự thay đổi tọa độ.
+            take_damage(): Giảm máu của trùm cuối.
+            draw_health_bar(): Vẽ thanh máu của trùm cuối.
+            fire_bullets(game): Trùm cuối bắn đạn ngẫu nhiên theo các hướng khác nhau.
         """
         self.image = pygame.image.load('Images/boss.png')
         self.image = pygame.transform.scale(self.image, (128, 128))
@@ -179,12 +196,17 @@ class Boss:
 
 class Explosion:
     """Lớp đại diện cho vụ nổ."""
+    
     def __init__(self, x, y):
         """
         Khởi tạo đối tượng Explosion.
         
-        Tham số:
+        Thuộc tính:
+            image (Surface): Hình ảnh của vụ nổ.
             x, y (float): Tọa độ của vụ nổ.
+            duration (int): Thời gian tồn tại của vụ nổ.
+        Phương thức:
+            draw(): Vẽ vụ nổ lên màn hình nếu nó vẫn còn tồn tại.
         """
         self.image = pygame.image.load('Images/explosion.png')
         self.x = x
@@ -200,7 +222,25 @@ class Explosion:
 class Game:
     """Lớp đại diện cho trò chơi."""
     def __init__(self):
-        """Khởi tạo đối tượng Game."""
+        """
+        Khởi tạo đối tượng Game.
+
+        Thuộc tính:
+            player (Player): Đối tượng người chơi.
+            enemies (list): Danh sách các đối tượng kẻ địch.
+            bullets (list): Danh sách các đối tượng viên đạn.
+            explosions (list): Danh sách các đối tượng vụ nổ.
+            score (int): Điểm số của người chơi.
+            font (Font): Font cho việc hiển thị điểm số.
+            game_over_font (Font): Font cho thông báo kết thúc trò chơi.
+            win_font (Font): Font cho thông báo chiến thắng.
+            enemy_fire_interval (int): Thời gian giữa các lần kẻ địch bắn đạn.
+            last_enemy_fire_time (int): Thời điểm cuối cùng mà kẻ địch bắn đạn.
+            game_over_flag (bool): Cờ cho trạng thái kết thúc trò chơi.
+            boss (Boss): Đối tượng trùm cuối.
+            last_player_fire_time (int): Thời điểm cuối cùng mà người chơi bắn đạn.
+            player_fire_delay (int): Độ trễ giữa các lần người chơi bắn đạn.
+        """
         self.player = Player()
         self.enemies = [Enemy() for _ in range(random.randint(15, 20))]
         self.bullets = []
