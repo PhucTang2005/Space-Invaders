@@ -10,17 +10,17 @@ timer = pygame.time.Clock()
 
 # Tiêu đề và biểu tượng
 pygame.display.set_caption('Bắn Ruồi')
-icon = pygame.image.load('space-invaders.png')
+icon = pygame.image.load('Images/space-invaders.png')
 pygame.display.set_icon(icon)
 
 # Tạo màn hình
 screen = pygame.display.set_mode((1000, 600))
 
 # Hình nền
-background = pygame.image.load('background.jpg')
+background = pygame.image.load('Images/background.jpg')
 
 # Nhạc nền
-mixer.music.load('background.wav')
+mixer.music.load('Sound/background.wav')
 mixer.music.play(-1)
 
 class Player:
@@ -34,7 +34,7 @@ class Player:
             x, y (float): Tọa độ ban đầu của người chơi.
             change_x, change_y (float): Sự thay đổi tọa độ của người chơi.
         """
-        self.image = pygame.image.load('player.png')
+        self.image = pygame.image.load('Images/player.png')
         self.x = 470
         self.y = 450
         self.change_x = 0
@@ -68,7 +68,7 @@ class Enemy:
             x, y (float): Tọa độ ban đầu của kẻ địch.
             change_x, change_y (float): Sự thay đổi tọa độ của kẻ địch.
         """
-        self.image = pygame.image.load('alien.png')
+        self.image = pygame.image.load('Images/alien.png')
         self.x = random.randint(0, 936)
         self.y = random.randint(0, 220)
         self.change_x = 0.2
@@ -99,7 +99,7 @@ class Bullet:
             owner (str): Chủ sở hữu viên đạn ('player' hoặc 'enemy').
             change_x, change_y (float): Sự thay đổi tọa độ của viên đạn.
         """
-        self.image = pygame.image.load('goldbullet.png') if owner == 'player' else pygame.image.load('enemybullet.png')
+        self.image = pygame.image.load('Images/goldbullet.png') if owner == 'player' else pygame.image.load('Images/enemybullet.png')
         self.x = x
         self.y = y
         self.change_x = change_x
@@ -132,7 +132,7 @@ class Boss:
             health (int): Máu hiện tại của trùm cuối.
             max_health (int): Máu tối đa của trùm cuối.
         """
-        self.image = pygame.image.load('boss.png')
+        self.image = pygame.image.load('Images/boss.png')
         self.image = pygame.transform.scale(self.image, (128, 128))
         self.x = 400
         self.y = 50
@@ -186,7 +186,7 @@ class Explosion:
         Tham số:
             x, y (float): Tọa độ của vụ nổ.
         """
-        self.image = pygame.image.load('explosion.png')
+        self.image = pygame.image.load('Images/explosion.png')
         self.x = x
         self.y = y
         self.duration = 30
@@ -252,7 +252,7 @@ class Game:
                 if bullet.owner == 'player':
                     for enemy in self.enemies:
                         if self.is_collision(bullet.x, bullet.y, enemy.x + 27, enemy.y + 27, 27):
-                            Explosive_Sound = mixer.Sound('punch.wav')
+                            Explosive_Sound = mixer.Sound('Sound/punch.wav')
                             Explosive_Sound.play()
                             bullet.state = 'ready'
                             self.score += 10
@@ -260,14 +260,14 @@ class Game:
                             self.explosions.append(Explosion(enemy.x, enemy.y))
                             break
                     if self.boss and self.is_collision(bullet.x, bullet.y, self.boss.x + 64, self.boss.y + 64, 64):
-                        Explosive_Sound = mixer.Sound('punch.wav')
+                        Explosive_Sound = mixer.Sound('Sound/punch.wav')
                         Explosive_Sound.play()
                         bullet.state = 'ready'
                         self.boss.take_damage()
                         self.explosions.append(Explosion(self.boss.x, self.boss.y))
                 elif bullet.owner == 'enemy':
                     if self.is_collision(bullet.x, bullet.y, self.player.x + 16, self.player.y + 16, 27):
-                        Explosive_Sound = mixer.Sound('endgame.mp3')
+                        Explosive_Sound = mixer.Sound('Sound/endgame.mp3')
                         Explosive_Sound.play()
                         self.explosions.append(Explosion(self.player.x, self.player.y))
                         self.game_over_flag = True
@@ -335,7 +335,7 @@ class Game:
                     if event.key == pygame.K_DOWN:
                         self.player.change_y = 0.5
                     if event.key == pygame.K_SPACE and len([b for b in self.bullets if b.owner == 'player']) < 3:
-                        Bullet_Sound = mixer.Sound('laser.wav')
+                        Bullet_Sound = mixer.Sound('Sound/laser.wav')
                         Bullet_Sound.play()
                         self.fire_bullet(self.player.x + 16, self.player.y, 'player', 0, -1)
                 if event.type == pygame.KEYUP:
@@ -352,7 +352,7 @@ class Game:
                     self.boss.move()
                     self.boss.draw()
                     if self.is_collision(self.boss.x, self.boss.y, self.player.x, self.player.y, 64):
-                        Explosive_Sound = mixer.Sound('endgame.mp3')
+                        Explosive_Sound = mixer.Sound('Sound/endgame.mp3')
                         Explosive_Sound.play()
                         self.explosions.append(Explosion(self.player.x, self.player.y))
                         self.game_over_flag = True
@@ -366,7 +366,7 @@ class Game:
                         self.game_over_flag = True
                         break
                     if self.is_collision(enemy.x, enemy.y, self.player.x, self.player.y, 54):
-                        Explosive_Sound = mixer.Sound('endgame.mp3')
+                        Explosive_Sound = mixer.Sound('Sound/endgame.mp3')
                         Explosive_Sound.play()
                         self.explosions.append(Explosion(self.player.x, self.player.y))
                         self.game_over_flag = True
